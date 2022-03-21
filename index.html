@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="videoplayer.css">
+    <script defer src="videoplayer.js"></script>
+    <title>TsiPlayer</title>
+</head>
+
+<body>
+    <div id="videoPlayerCont">
+        <video id="videoPlayer" poster="./saddog.jpg" src="./fresh.mp4">
+
+            Sorry, your browser doesn't support embedded videos.
+        </video>
+        <div id="video-controls" class="controls">
+            <div id="bot-bar">
+                <div id="buttons-bar">
+                    <button id="playpause" aria-label="Play" title="play" type="button">
+                        <svg style="
+                        background: red;
+                    " viewBox="0 0 36 36" class="svg">
+                            <path id="play" d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"></path>
+                            <!-- <path id="pause" d="M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z"></path> -->
+                        </svg>
+                    </button>
+                    <button id="volume" aria-label="Mute title="Mute">
+                        <svg viewBox="0 0 36 36" class="svg">
+                            <path id="volume-full"
+                                d="M8,21 L12,21 L17,26 L17,10 L12,15 L8,15 L8,21 Z M19,14 L19,22 C20.48,21.32 21.5,19.77 21.5,18 C21.5,16.26 20.48,14.74 19,14 ZM19,11.29 C21.89,12.15 24,14.83 24,18 C24,21.17 21.89,23.85 19,24.71 L19,26.77 C23.01,25.86 26,22.28 26,18 C26,13.72 23.01,10.14 19,9.23 L19,11.29 Z"
+                                fill="#fff"></path>
+                            <!-- <path id="volume-half"
+                                d="M8,21 L12,21 L17,26 L17,10 L12,15 L8,15 L8,21 Z M19,14 L19,22 C20.48,21.32 21.5,19.77 21.5,18 C21.5,16.26 20.48,14.74 19,14 Z"
+                                fill="#fff"></path> -->
+                            <path id="volum-muted" d="M 9.25,9 7.98,10.27 24.71,27 l 1.27,-1.27 Z" fill="#fff"
+                                style="display: none;">
+                            </path>
+                        </svg>
+                    </button>
+                    <div id="timer">
+                        <span class="currentTime">0:00</span>
+                        <span>/</span>
+                        <span class="totalTime">0:00</span>
+                    </div>
+                    <button id="pip" aria-label="Picture-in-picture" title="picture-in-picture">
+                        <svg viewBox="0 0 36 36" class="svg">
+                            <path
+                                d="M25,17 L17,17 L17,23 L25,23 L25,17 L25,17 Z M29,25 L29,10.98 C29,9.88 28.1,9 27,9 L9,9 C7.9,9 7,9.88 7,10.98 L7,25 C7,26.1 7.9,27 9,27 L27,27 C28.1,27 29,26.1 29,25 L29,25 Z M27,25.02 L9,25.02 L9,10.97 L27,10.97 L27,25.02 L27,25.02 Z"
+                                fill="#fff"></path>
+                        </svg>
+                    </button>
+                    <button id="fullscreen" aria-label="Fullscreen(f)" title="Fullscreen(f)">
+                        <svg viewBox="0 0 36 36" class="svg">
+                            <g id="fullscreen-off">
+                                <path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z" fill="#fff"></path>
+                                <path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 0,0 z" fill="#fff"></path>
+                                <path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 0,0 z" fill="#fff"></path>
+                                <path d="M 12,20 10,20 10,26 l 6,0 0,-2 -4,0 0,-4 0,0 z" fill="#fff"></path>
+                            </g>
+                            <!-- <g id="fullscreen-on">
+                                <path d="m 14,14 -4,0 0,2 6,0 0,-6 -2,0 0,4 0,0 z" fill="#fff"></path>
+                                <path d="m 22,14 0,-4 -2,0 0,6 6,0 0,-2 -4,0 0,0 z" fill="#fff"></path>
+                                <path d="m 20,26 2,0 0,-4 4,0 0,-2 -6,0 0,6 0,0 z" fill="#fff"></path>
+                                <path d="m 10,22 4,0 0,4 2,0 0,-6 -6,0 0,2 0,0 z" fill="#fff"></path>
+                            </g> -->
+                        </svg>
+
+
+                    </button>
+                </div>
+                <!-- <div class="progress-bar">
+                    <progress id="progress" value="0" min="0">
+                        <span id="progress-bar"></span>
+                    </progress>
+                </div> -->
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+body{
+    background: rgb(26, 26, 26);
+}
+#videoPlayerCont{
+    position: relative;
+    width: 100%;
+    height: 480px;
+    display: flex;
+    justify-content: center;
+    background-color: black;
+    outline: 1px solid rgb(128, 0, 0);
+}
+#videoPlayer{
+    height: 100%;
+}
+#video-controls{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+}
+#bot-bar{
+    width: 100%;
+    /* height: 300px; */
+    position: absolute;
+    bottom: 0%;
+    background: transparent;
+}
+#bot-bar #buttons-bar{
+    /* width: 50px; */
+    display: flex;
+    align-items: center;
+}
+#bot-bar #buttons-bar button{
+    background: transparent;
+    border: none;
+    padding: 0%;
+    display: flex;
+    justify-content: c;
+    /* width: 50px; */
+}
+#video-controls .svg{
+    fill: white;
+    width: 48px;
+    height: 48px;
+}
