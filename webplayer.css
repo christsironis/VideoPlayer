@@ -1,5 +1,6 @@
 body{
     background: rgb(26, 26, 26);
+    font-family: 'Roboto', sans-serif;
 }
 #videoPlayerCont{
     position: relative;
@@ -8,11 +9,16 @@ body{
     display: flex;
     justify-content: center;
     background-color: black;
-    outline: 1px solid rgb(128, 0, 0);
+    color: white;
+    overflow: hidden;
+    /* border: 1px solid rgb(128, 0, 0); */
 }
+
 #videoPlayer{
+    width: 100%;
     height: 100%;
 }
+
 #video-controls{
     width: 100%;
     height: 100%;
@@ -26,22 +32,152 @@ body{
     bottom: 0%;
     background: transparent;
 }
-#bot-bar #buttons-bar{
+#buttons-bar{
     width: 100%;
     display: flex;
     align-items: center;
 }
-#bot-bar #buttons-bar button{
+button{
     background: transparent;
     border: none;
     padding: 0%;
     line-height: 0;
-    /* display: flex;
-    justify-content: center; */
-    /* width: 50px; */
+    cursor: pointer;
+}
+#volume{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#vol-percent-bar{
+    width: 0px;
+    height: 3px;
+    position: relative;
+    cursor: pointer;
+    background-color: rgba(255,255,255,0.3);
+    transition: all .1s cubic-bezier(0.4,0,1,1);
+    /* transform-origin: 0 0;
+    transform: scaleX(0); */
+    
+}
+#volume:hover #vol-percent-bar{
+    width: 60px;
+    /* transform: scaleX(1); */  
+}
+#volume:hover #vol-pin{
+    width: 13px;
+}
+#vol-pin{
+    position: absolute;
+    top: 50%;
+    transform: translate(var(--volumePos,0px),-50%);
+    background-color: white;
+    border-radius: 60px;
+    width: 0px;
+    height: 13px;
+    transition: all 0.01s cubic-bezier(0.4,0,1,1);
+}
+#vol-bar{
+    height: 100%;
+    width: 100%;
+}
+#vol-value{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0%;
+    background: white;
+    transform: scaleX(0.5);
+    transform-origin: 0 0;
+}
+#timer{
+    flex-grow: 1;
+    padding-left: 10px;
 }
 #video-controls .svg{
     fill: white;
     width: 48px;
     height: 48px;
 }
+
+#progress-bar{
+    position: absolute;
+    width: 100%;
+    bottom: 100%;
+    height: 6px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px 0 4px 0;
+    --bar: #f00;
+    --mouseX: 0px;
+}
+#progress-bar:hover #bar{ 
+    height: 100%;
+}
+#progress-bar:hover #bar-pin{
+    transform: translate(var(--currentPos,0px),-50%) scale(1);
+}
+#progress-bar:hover #bar-label{ 
+    display: block;
+}
+#bar{ 
+    background-color: rgba(255,255,255,0.4);
+    position: relative;
+    width: 100%;
+    height: 3px;
+    transition: all .1s cubic-bezier(0.4,0,1,1),-webkit-transform .1s cubic-bezier(0.4,0,1,1);
+}
+#bar-value{ 
+    background-color: var(--bar);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    transform: scaleX(0.1);
+    transform-origin: 0 0;
+    /* height: 83px; */
+}
+#bar-pin{
+    position: absolute;
+    top: 50%;
+    transform: translate(var(--currentPos,100px),-50%) scale(0);
+    background-color: var(--bar);
+    border-radius: 60px;
+    width: 13px;
+    height: 13px;
+    transition: all .1s cubic-bezier(0.4,0,1,1),-webkit-transform .1s cubic-bezier(0.4,0,1,1);
+}
+#bar-label{
+    display: none;
+    position: absolute;
+    top: -200%;
+    font-weight: 900;
+    transform: translateX(var(--mouseX));
+}
+#bar-hover{
+    background-color: rgba(255,255,255,0.5);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    transform: scaleX(0.5);
+    transform-origin: 0 0;
+}
+/* progress[value]{ 
+    appearance: none;
+    width: 80%;
+    height: 83px;
+}
+progress[value]::-webkit-progress-bar {
+    background-color: rgb(255, 255, 255);
+    border-radius: 60px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+progress[value]::-webkit-progress-value {
+    background-color: rgb(255, 0, 0);
+    border-radius: 60px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+} */

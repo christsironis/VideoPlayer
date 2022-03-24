@@ -1,0 +1,11 @@
+let video = document.querySelector("#videoPlayer");
+let playBut = document.querySelector("#playpause");
+let vol = document.querySelector("#volume");
+let volBut = document.querySelector("#volume #vol-but");
+let currentTime = document.querySelector("#currentTime");
+let totalTime = document.querySelector("#totalTime");
+let subs = document.querySelector("#subs");
+let settings = document.querySelector("#settings");
+let pip = document.querySelector("#pip");
+let fsBut = document.querySelector("#fullscreen");
+let progBarPin = document.querySelector("#progress-bar #bar-pin");
