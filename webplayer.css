@@ -11,14 +11,13 @@ body{
     background-color: black;
     color: white;
     overflow: hidden;
-    /* border: 1px solid rgb(128, 0, 0); */
 }
 
 #videoPlayer{
     width: 100%;
     height: 100%;
+    z-index: 1;
 }
-
 #video-controls{
     width: 100%;
     height: 100%;
@@ -26,11 +25,13 @@ body{
     top: 0;
 }
 #bot-bar{
+    z-index: 2;
     width: 100%;
-    /* height: 300px; */
     position: absolute;
     bottom: 0%;
     background: transparent;
+    display: flex;
+    justify-content: center;
 }
 #buttons-bar{
     width: 100%;
@@ -43,7 +44,31 @@ button{
     padding: 0%;
     line-height: 0;
     cursor: pointer;
+    transition: transform .2s ease-in-out;
 }
+button:hover {
+    transform: scale(1.15);
+ }
+.svg path{
+    transition: d .2s ease-in-out;
+}
+
+#playpause[data-state="pause"] path{
+    d: path('M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z');
+}
+#fullscreen[data-state="full"] #p0{
+    d: path('m 14,14 -4,0 0,2 6,0 0,-6 -2,0 0,4 0,0 z');
+}
+#fullscreen[data-state="full"] #p1{
+    d: path('m 22,14 0,-4 -2,0 0,6 6,0 0,-2 -4,0 0,0 z');
+}
+#fullscreen[data-state="full"] #p2{
+    d: path('m 20,26 2,0 0,-4 4,0 0,-2 -6,0 0,6 0,0 z');
+}
+#fullscreen[data-state="full"] #p3{
+    d: path('m 10,22 4,0 0,4 2,0 0,-6 -6,0 0,2 0,0 z');
+}
+
 #volume{
     display: flex;
     flex-direction: row;
@@ -55,10 +80,7 @@ button{
     position: relative;
     cursor: pointer;
     background-color: rgba(255,255,255,0.3);
-    transition: all .1s cubic-bezier(0.4,0,1,1);
-    /* transform-origin: 0 0;
-    transform: scaleX(0); */
-    
+    transition: all .1s cubic-bezier(0.4,0,1,1);   
 }
 #volume:hover #vol-percent-bar{
     width: 60px;
@@ -98,25 +120,28 @@ button{
     fill: white;
     width: 48px;
     height: 48px;
+    transition: all 0.1s ease-in-out;
 }
+
 
 #progress-bar{
     position: absolute;
-    width: 100%;
+    width: calc(100% - 20px);
     bottom: 100%;
-    height: 6px;
+    height: 13px;
+    margin: auto;
     display: flex;
     align-items: center;
     cursor: pointer;
-    padding: 4px 0 4px 0;
+    padding: 0px 0px 0px 0px;
     --bar: #f00;
     --mouseX: 0px;
 }
 #progress-bar:hover #bar{ 
-    height: 100%;
+    height: 6px;
 }
 #progress-bar:hover #bar-pin{
-    transform: translate(var(--currentPos,0px),-50%) scale(1);
+    transform: translate(calc(var(--currentPos,0px) - 50%)) scale(1);
 }
 #progress-bar:hover #bar-label{ 
     display: block;
@@ -137,12 +162,11 @@ button{
     left: 0%;
     transform: scaleX(0.1);
     transform-origin: 0 0;
-    /* height: 83px; */
 }
 #bar-pin{
     position: absolute;
-    top: 50%;
-    transform: translate(var(--currentPos,100px),-50%) scale(0);
+    top: 0%;
+    transform: translate(calc(var(--currentPos,0px) - 50%)) scale(0);
     background-color: var(--bar);
     border-radius: 60px;
     width: 13px;
@@ -166,18 +190,3 @@ button{
     transform: scaleX(0.5);
     transform-origin: 0 0;
 }
-/* progress[value]{ 
-    appearance: none;
-    width: 80%;
-    height: 83px;
-}
-progress[value]::-webkit-progress-bar {
-    background-color: rgb(255, 255, 255);
-    border-radius: 60px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
-}
-progress[value]::-webkit-progress-value {
-    background-color: rgb(255, 0, 0);
-    border-radius: 60px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
-} */
