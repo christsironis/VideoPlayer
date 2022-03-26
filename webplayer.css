@@ -42,12 +42,15 @@ button{
     background: transparent;
     border: none;
     padding: 0%;
+    margin: 4px;
     line-height: 0;
     cursor: pointer;
     transition: transform .2s ease-in-out;
 }
 button:hover {
     transform: scale(1.15);
+    /* border-radius: 5px;
+    background-color: #7070704a; */
  }
 .svg path{
     transition: d .2s ease-in-out;
@@ -83,32 +86,38 @@ button:hover {
     transition: all .1s cubic-bezier(0.4,0,1,1);   
 }
 #volume:hover #vol-percent-bar{
-    width: 60px;
+    width: 100px;
     /* transform: scaleX(1); */  
 }
 #volume:hover #vol-pin{
-    width: 13px;
+    width: 15px;
 }
 #vol-pin{
     position: absolute;
     top: 50%;
-    transform: translate(var(--volumePos,0px),-50%);
+    transform: translate(calc(var(--volumePos,0px) - 50%),-50%);
     background-color: white;
     border-radius: 60px;
     width: 0px;
-    height: 13px;
+    height: 15px;
     transition: all 0.01s cubic-bezier(0.4,0,1,1);
 }
 #vol-bar{
     height: 100%;
     width: 100%;
 }
-#vol-value{
+.vol-value{
     height: 100%;
-    width: 100%;
+    width: 50%;
     position: absolute;
     top: 0%;
-    background: white;
+    background-color: white;
+    transform: scaleX(0.5);
+    transform-origin: 0 0;
+}
+#vol-value-extreme{
+    right: 0%;
+    background-color: rgb(248, 0, 0);
     transform: scaleX(0.5);
     transform-origin: 0 0;
 }
