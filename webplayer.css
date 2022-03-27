@@ -59,6 +59,10 @@ button:hover {
 #playpause[data-state="pause"] path{
     d: path('M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z');
 }
+#playpause[data-state="replay"] path{
+    d: path('M 18 11 V 7 l -5 5 l 5 5 v -4 c 3.3 0 6 2.7 6 6 c 0 3.3 -2.7 6 -6 6 c -3.3 0 -6 -2.7 -6 -6 h -2 c 0 4.4 3.6 8 8 8 c 4.4 0 8 -3.6 8 -8 c 0 -4.4 -3.6 -8 -8 -8 Z');
+}
+
 #fullscreen[data-state="full"] #p0{
     d: path('m 14,14 -4,0 0,2 6,0 0,-6 -2,0 0,4 0,0 z');
 }
@@ -72,10 +76,24 @@ button:hover {
     d: path('m 10,22 4,0 0,4 2,0 0,-6 -6,0 0,2 0,0 z');
 }
 
+#volume[data-state="extreme"] path{
+    fill: red;
+}
+#volume[data-state="half"] path{
+    d: path("M8,21 L12,21 L17,26 L17,10 L12,15 L8,15 L8,21 Z M19,14 L19,22 C20.48,21.32 21.5,19.77 21.5,18 C21.5,16.26 20.48,14.74 19,14 Z");
+}
+#volume[data-state="muted"] #vol-muted{
+    opacity: 1;
+}
+
 #volume{
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+#volume #vol-muted{
+    opacity: 0;
+    transition: opacity .1s cubic-bezier(0.4,0,1,1);   
 }
 #vol-percent-bar{
     width: 0px;
@@ -87,20 +105,26 @@ button:hover {
 }
 #volume:hover #vol-percent-bar{
     width: 100px;
-    /* transform: scaleX(1); */  
 }
 #volume:hover #vol-pin{
+    width: 15px;
+}
+#volume:active #vol-percent-bar{
+    width: 100px;
+}
+#volume:active #vol-pin{
     width: 15px;
 }
 #vol-pin{
     position: absolute;
     top: 50%;
-    transform: translate(calc(var(--volumePos,0px) - 50%),-50%);
+    left: 100%;
+    transform: translate( -50%,-50%);
     background-color: white;
     border-radius: 60px;
     width: 0px;
     height: 15px;
-    transition: all 0.01s cubic-bezier(0.4,0,1,1);
+    /* transition: all 0.01s cubic-bezier(0.4,0,1,1); */
 }
 #vol-bar{
     height: 100%;
@@ -108,18 +132,15 @@ button:hover {
 }
 .vol-value{
     height: 100%;
-    width: 50%;
+    width: var(--vol-Normal,0%);
     position: absolute;
     top: 0%;
     background-color: white;
-    transform: scaleX(0.5);
-    transform-origin: 0 0;
 }
 #vol-value-extreme{
-    right: 0%;
+    left: 50%;
+    width: var(--vol-Extreme,0%);
     background-color: rgb(248, 0, 0);
-    transform: scaleX(0.5);
-    transform-origin: 0 0;
 }
 #timer{
     flex-grow: 1;
