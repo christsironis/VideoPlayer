@@ -14,23 +14,34 @@ let pip = document.querySelector("#pip");
 let fsBut = document.querySelector("#fullscreen");
 let fsButPaths = document.querySelectorAll("#fullscreen path");
 let progBarPin = document.querySelector("#progress-bar #bar-pin");
+
 let barWidth = Math.round( volBar.clientWidth ) || 100;
 let halfBarWidth = Math.round( barWidth / 2 );
 let barOffsetLeft = Math.ceil( volBar.offsetLeft + (volPin.clientWidth/2 || 7.5) );
 let maxGain = 15;
-let volMagicNum = maxGain / halfBarWidth;
+let GainMagicNum = maxGain / halfBarWidth;
 let gain = 1;
+let volumeStep = barWidth/20;
 
-let AudioGainNode = AudioGain( video, 15 );
+let AudioGainNode = AudioGain( video, maxGain );
 SetVolumeSettings( {clientX : barOffsetLeft + halfBarWidth } );
 
 // Sound 
+video.addEventListener("wheel",(e)=>{
+    console.log(e.deltaY,volPin.offsetLeft + barWidth/10)
+    e.preventDefault();
+    if (e.deltaY < 0) {
+        SetVolumeSettings( {clientX : barOffsetLeft + volPin.offsetLeft + volumeStep } );        
+    } else {
+        SetVolumeSettings( {clientX : barOffsetLeft + volPin.offsetLeft - volumeStep } );        
+    }
+}, {passive:false});
 volBut.addEventListener("click",(e)=>{
     let state = vol.getAttribute("data-state");
-    if( state !== "muted" ){
-        SetVolumeSettings(e);
-    }else {
+    if( state === "muted" ){
         SetVolumeSettings( {clientX : barOffsetLeft + halfBarWidth } );        
+    }else {
+        SetVolumeSettings(e);
     }
 });
 volBar.addEventListener('mousedown', e => {
@@ -41,12 +52,7 @@ volBar.addEventListener('mousedown', e => {
 }, {passive:false});
 
 function SetVolumeSettings(e){
-
-    let volume = SetVolPin( e.clientX );
-    Vol_Colors_Gain(volume);
-    volPin.style.left = volume + "px";
-}
-function SetVolPin( x ){
+    let x = e.clientX
     let volume;
     if(barOffsetLeft >= x){
         volume = 0;
@@ -57,23 +63,24 @@ function SetVolPin( x ){
     }else{
         volume = x - barOffsetLeft;
     }
-    return volume;
+    Vol_Colors_Gain(volume);
+    volPin.style.left = volume + "px";
 }
 function Vol_Colors_Gain( volume ){
     let normBarsCol;
     let extBarsCol;
     if(volume > halfBarWidth){
-        vol.setAttribute("data-state","extreme")
-        gain = (volume - halfBarWidth) * volMagicNum;
+        vol.setAttribute("data-state","extreme");
+        gain = (volume - halfBarWidth) * GainMagicNum;
         normBarsCol = (halfBarWidth * 100) / barWidth;
         extBarsCol = ((volume - halfBarWidth) * 100) / barWidth ;
     }else{
-        if(volume > 25 ){
+        if(volume > halfBarWidth/2 ){
             vol.setAttribute("data-state","full");
         } else if( volume > 0 ){
             vol.setAttribute("data-state","half");
         }
-        gain = volume * ( 1 / halfBarWidth);
+        gain = volume / halfBarWidth;
         normBarsCol = volume;
         extBarsCol = 0;
     }
@@ -93,6 +100,8 @@ function AudioGain( audioSource ){
     gainNode.connect(audioCtx.destination);
     return gainNode;
 }
+
+// play - pause - replay
 playBut.addEventListener("click",PlayHandler);
 video.addEventListener("click",PlayHandler);
 video.addEventListener('ended', (event) => {
