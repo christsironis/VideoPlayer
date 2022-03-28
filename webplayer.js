@@ -14,6 +14,9 @@ let pip = document.querySelector("#pip");
 let fsBut = document.querySelector("#fullscreen");
 let fsButPaths = document.querySelectorAll("#fullscreen path");
 let progBarPin = document.querySelector("#progress-bar #bar-pin");
+let dbClick=false;
+let dbTimer;
+let dbDelay= 200;
 
 let barWidth = Math.round( volBar.clientWidth ) || 100;
 let halfBarWidth = Math.round( barWidth / 2 );
@@ -28,7 +31,6 @@ SetVolumeSettings( {clientX : barOffsetLeft + halfBarWidth } );
 
 // Sound 
 video.addEventListener("wheel",(e)=>{
-    console.log(e.deltaY,volPin.offsetLeft + barWidth/10)
     e.preventDefault();
     if (e.deltaY < 0) {
         SetVolumeSettings( {clientX : barOffsetLeft + volPin.offsetLeft + volumeStep } );        
@@ -107,20 +109,26 @@ video.addEventListener("click",PlayHandler);
 video.addEventListener('ended', (event) => {
     playBut.setAttribute("data-state","replay");
 });
-function PlayHandler(){
-    if(playBut.getAttribute("data-state") === "play"){
-        playBut.setAttribute("data-state","pause");
-        video.play();
-    }
-    else if(playBut.getAttribute("data-state") === "pause"){
-        playBut.setAttribute("data-state","play");
-        video.pause();
-    } else{
-        playBut.setAttribute("data-state","pause");
-        video.pause();
-        video.currentTime = 0;
-        video.play();
-    }
+function PlayHandler(e){
+    timer = setTimeout(()=>{
+        if(!dbClick){
+            if(playBut.getAttribute("data-state") === "play"){
+                playBut.setAttribute("data-state","pause");
+                video.play();
+            }
+            else if(playBut.getAttribute("data-state") === "pause"){
+                playBut.setAttribute("data-state","play");
+                video.pause();
+            } else{
+                playBut.setAttribute("data-state","pause");
+                video.pause();
+                video.currentTime = 0;
+                video.play();
+            }
+        }else{
+            dbClick= false;
+        }
+    }, dbDelay);
 }
 // video.addEventListener('play', (event) => {
 //     playBut.setAttribute("data-state","pause");
@@ -129,9 +137,14 @@ function PlayHandler(){
 //     playBut.setAttribute("data-state","play");
 // });
 
+// fullscreen
 fsBut.addEventListener("click",FullScrHandler);
-video.addEventListener("dblclick",FullScrHandler);
-addEventListener('fullscreenchange', event => {
+video.addEventListener("dblclick",(e)=>{
+    dbClick = true;
+    clearTimeout( timer );
+    FullScrHandler(e);
+});
+document.addEventListener('fullscreenchange', event => {
     if( document.fullscreenElement === videoPlayerCont){
         fsBut.setAttribute("data-state","nofull");
     } 
@@ -139,7 +152,7 @@ addEventListener('fullscreenchange', event => {
         fsBut.setAttribute("data-state","full");
     }
 });
-function FullScrHandler(){
+function FullScrHandler(e){
     if( document.fullscreenElement === videoPlayerCont){
         document.exitFullscreen();
     } 
