@@ -1,33 +1,74 @@
 let videoCont = document.querySelector("#videoPlayerCont");
 let video = document.querySelector("#videoPlayer");
 let playBut = document.querySelector("#playpause");
-let playButPath = playBut.querySelector("#play");
 let vol = document.querySelector("#volume");
 let volBut = document.querySelector("#volume #vol-but");
 let volBar = document.querySelector("#volume #vol-percent-bar");
 let volPin = document.querySelector("#volume #vol-percent-bar #vol-pin");
-let currentTime = document.querySelector("#currentTime");
+let currentTimeSpan = document.querySelector("#currentTime");
 let totalTime = document.querySelector("#totalTime");
 let subs = document.querySelector("#subs");
 let settings = document.querySelector("#settings");
 let pip = document.querySelector("#pip");
 let fsBut = document.querySelector("#fullscreen");
-let fsButPaths = document.querySelectorAll("#fullscreen path");
-let progBarPin = document.querySelector("#progress-bar #bar-pin");
+let progress = document.querySelector("#progress");
+let progBar = document.querySelector("#prog-bar");
+let progBarPin = document.querySelector("#prog-bar #prog-bar-pin");
+
+// Double-click => fullscreen Variables
 let dbClick=false;
 let dbTimer;
 let dbDelay= 200;
 
+// Sound Variables
 let barWidth = Math.round( volBar.clientWidth ) || 100;
 let halfBarWidth = Math.round( barWidth / 2 );
 let barOffsetLeft = Math.ceil( volBar.offsetLeft + (volPin.clientWidth/2 || 7.5) );
+let gain = 1;
 let maxGain = 15;
 let GainMagicNum = maxGain / halfBarWidth;
-let gain = 1;
 let volumeStep = barWidth/20;
-
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let AudioGainNode = AudioGain( video, maxGain );
+// Timeline Variables
+let currentTime = 0;
+
+// Initialization
+video.addEventListener('loadedmetadata', (event) => {
+    totalTime.innerHTML = VidDurationFormat( video.duration );
+});
+video.addEventListener('timeupdate', (event) => {
+    let time = Math.round(video.currentTime);
+    // MoveProgBar();
+    if( time === currentTime ) return;
+    currentTimeSpan.innerHTML =  VidDurationFormat( currentTime = time );
+});
+video.addEventListener('canplaythrough', (event) => {
+    console.log('I think I can play through the entire ' +
+    'video without ever having to stop to buffer.');
+});
+video.src="vindeo.mp4";
 SetVolumeSettings( {clientX : barOffsetLeft + halfBarWidth } );
+
+// Timeline
+progress.addEventListener('mousemove', e => {
+    let x = e.clientX - progress.getBoundingClientRect().left;
+    if( x >= 0){ progress.style.setProperty("--hoverOffset",x+"px"); }
+});
+progress.addEventListener('mouseleave', e => {
+    progress.style.setProperty("--hoverOffset","0px");
+});
+function MoveProgBar(){
+    let offset = (video.currentTime ) / video.duration;
+    progress.style.setProperty("--barOffset", offset);
+}
+function VidDurationFormat(sec) {
+    let min = Math.floor(sec / 60);
+    min = (min >= 10) ? min : "0" + min;
+    sec = Math.round(sec % 60);
+    sec = (sec >= 10) ? sec : "0" + sec;
+    return min + ":" + sec;
+}
 
 // Sound 
 video.addEventListener("wheel",(e)=>{
@@ -95,7 +136,6 @@ function MouseUp(e) {
     document.onmouseup= null;
 }
 function AudioGain( audioSource ){
-    let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     let source = audioCtx.createMediaElementSource(audioSource);
     let gainNode = audioCtx.createGain();
     source.connect(gainNode);
@@ -103,22 +143,29 @@ function AudioGain( audioSource ){
     return gainNode;
 }
 
-// play - pause - replay
+// Play - Pause - Replay
 playBut.addEventListener("click",PlayHandler);
 video.addEventListener("click",PlayHandler);
 video.addEventListener('ended', (event) => {
     playBut.setAttribute("data-state","replay");
 });
+let timer;
 function PlayHandler(e){
     timer = setTimeout(()=>{
         if(!dbClick){
             if(playBut.getAttribute("data-state") === "play"){
                 playBut.setAttribute("data-state","pause");
-                video.play();
+                audioCtx.resume().then( ()=> {
+                    video.play(); 
+                    timer = setInterval(() => { MoveProgBar(); }, 20); 
+                });
             }
             else if(playBut.getAttribute("data-state") === "pause"){
                 playBut.setAttribute("data-state","play");
-                video.pause();
+                audioCtx.suspend().then( ()=> {
+                    clearInterval(timer);
+                    video.pause(); 
+                });
             } else{
                 playBut.setAttribute("data-state","pause");
                 video.pause();
@@ -130,14 +177,9 @@ function PlayHandler(e){
         }
     }, dbDelay);
 }
-// video.addEventListener('play', (event) => {
-//     playBut.setAttribute("data-state","pause");
-// });
-// video.addEventListener('pause', (event) => {
-//     playBut.setAttribute("data-state","play");
-// });
 
-// fullscreen
+
+// Fullscreen
 fsBut.addEventListener("click",FullScrHandler);
 video.addEventListener("dblclick",(e)=>{
     dbClick = true;
@@ -160,7 +202,7 @@ function FullScrHandler(e){
         videoCont.requestFullscreen();
     }
 }
-
+// Picture-in-Picture
 pip.addEventListener("click",PipHandler);
 addEventListener('leavepictureinpicture', event => { 
     pip.setAttribute("data-state","disabled");

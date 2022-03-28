@@ -154,7 +154,7 @@ button:hover {
 }
 
 
-#progress-bar{
+#progress{
     position: absolute;
     width: calc(100% - 20px);
     bottom: 100%;
@@ -167,21 +167,20 @@ button:hover {
     --bar: #f00;
     --mouseX: 0px;
 }
-#progress-bar:hover #bar{ 
+#progress:hover #prog-bar{ 
     height: 6px;
 }
-#progress-bar:hover #bar-pin{
-    transform: translate(calc(var(--currentPos,0px) - 50%)) scale(1);
+#progress:hover #prog-bar-pin{
+    transform: translateX(-50%) scale(1);
 }
-#progress-bar:hover #bar-label{ 
+#progress:hover #prog-bar-label{ 
     display: block;
 }
-#bar{ 
+#prog-bar{ 
     background-color: rgba(255,255,255,0.4);
     position: relative;
     width: 100%;
     height: 3px;
-    transition: all .1s cubic-bezier(0.4,0,1,1),-webkit-transform .1s cubic-bezier(0.4,0,1,1);
 }
 #bar-value{ 
     background-color: var(--bar);
@@ -190,20 +189,21 @@ button:hover {
     position: absolute;
     bottom: 0%;
     left: 0%;
-    transform: scaleX(0.1);
+    transform: scaleX(var(--barOffset,0%));
     transform-origin: 0 0;
 }
-#bar-pin{
+#prog-bar-pin{
     position: absolute;
+    left: calc(var(--barOffset)*100%);
     top: 0%;
-    transform: translate(calc(var(--currentPos,0px) - 50%)) scale(0);
+    transform: translateX(-50%) scale(0);
     background-color: var(--bar);
     border-radius: 60px;
     width: 13px;
     height: 13px;
     transition: all .1s cubic-bezier(0.4,0,1,1),-webkit-transform .1s cubic-bezier(0.4,0,1,1);
 }
-#bar-label{
+#prog-bar-label{
     display: none;
     position: absolute;
     top: -200%;
@@ -212,11 +212,9 @@ button:hover {
 }
 #bar-hover{
     background-color: rgba(255,255,255,0.5);
-    width: 100%;
+    width: var(--hoverOffset,0%);
     height: 100%;
     position: absolute;
     bottom: 0%;
     left: 0%;
-    transform: scaleX(0.5);
-    transform-origin: 0 0;
 }

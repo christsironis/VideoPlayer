@@ -12,7 +12,7 @@
 </head>
 <body>
     <div id="videoPlayerCont">
-        <video id="videoPlayer"  src="vindeo.mp4">
+        <video id="videoPlayer">
             Sorry, your browser doesn't support embedded videos.
         </video>
         <div id="video-controls">
@@ -44,9 +44,9 @@
                         </div>
                     </div>
                     <div id="timer">
-                        <span class="currentTime">0:00</span>
+                        <span id="currentTime">00:00</span>
                         <span>/</span>
-                        <span class="totalTime">0:00</span>
+                        <span id="totalTime">00:00</span>
                     </div>
                     <button id="subs" aria-label="no subs" title="no subs">
                         <svg viewBox="0 0 36 36" fill-opacity="0.5" class="svg">
@@ -82,13 +82,13 @@
                         </svg>
                     </button>
                 </div>
-                <div id="progress-bar">
-                    <span id="bar-label">0:45</span>
-                    <div id="bar" value="32" max="100">
+                <div id="progress">
+                    <span id="prog-bar-label">0:45</span>
+                    <div id="prog-bar" value="32" max="100">
                         <span id="bar-hover"></span>
                         <span id="bar-value"></span>
                     </div>
-                    <span id="bar-pin"></span>
+                    <span id="prog-bar-pin"></span>
                 </div>
             </div>
         </div>
