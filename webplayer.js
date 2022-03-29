@@ -23,7 +23,7 @@ let dbDelay= 200;
 // Sound Variables
 let barWidth = Math.round( volBar.clientWidth ) || 100;
 let halfBarWidth = Math.round( barWidth / 2 );
-let barOffsetLeft = Math.ceil( volBar.offsetLeft + (volPin.clientWidth/2 || 7.5) );
+let barOffsetLeft = volBar.getBoundingClientRect().left;
 let gain = 1;
 let maxGain = 15;
 let GainMagicNum = maxGain / halfBarWidth;
@@ -105,36 +105,37 @@ volBar.addEventListener('mousedown', e => {
 }, {passive:false});
 
 function SetVolumeSettings(e){
-    let x = e.clientX
-    let volume;
-    if(barOffsetLeft >= x){
-        volume = 0;
+    let x = e.clientX - barOffsetLeft;
+    let diff;
+    if( x <= 0){
+        diff = 0;
         vol.setAttribute("data-state","muted");
     }
-    else if( x >= barOffsetLeft + barWidth ){
-        volume = barWidth;
+    else if( x >= barWidth ){
+        diff = barWidth;
     }else{
-        volume = x - barOffsetLeft;
+        diff = x;
     }
-    Vol_Colors_Gain(volume);
-    volPin.style.left = volume + "px";
+    Vol_Colors_Gain(diff);
+    volPin.style.left = diff + "px";
 }
-function Vol_Colors_Gain( volume ){
+function Vol_Colors_Gain( diff ){
     let normBarsCol;
     let extBarsCol;
-    if(volume > halfBarWidth){
+    let upperHalf = diff - halfBarWidth;
+    if( upperHalf > 0 ){
         vol.setAttribute("data-state","extreme");
-        gain = (volume - halfBarWidth) * GainMagicNum;
-        normBarsCol = (halfBarWidth * 100) / barWidth;
-        extBarsCol = ((volume - halfBarWidth) * 100) / barWidth ;
+        gain = ( upperHalf / halfBarWidth ) * maxGain;
+        normBarsCol = 50;
+        extBarsCol = ( upperHalf * 100) / barWidth ;
     }else{
-        if(volume > halfBarWidth/2 ){
+        if(diff > halfBarWidth/2 ){
             vol.setAttribute("data-state","full");
-        } else if( volume > 0 ){
+        } else if( diff > 0 ){
             vol.setAttribute("data-state","half");
         }
-        gain = volume / halfBarWidth;
-        normBarsCol = volume;
+        gain = diff / halfBarWidth;
+        normBarsCol = diff;
         extBarsCol = 0;
     }
     AudioGainNode.gain.value = gain;

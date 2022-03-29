@@ -188,11 +188,12 @@ button:hover {
     position: absolute;
     bottom: 0%;
     left: 0%;
+    display: flex;
+    align-items: center;
 }
 #prog-bar-pin{
     position: absolute;
-    left: var(--barOffset);
-    top: 0%;
+    left: 100%;
     transform: translateX(-50%) scale(0);
     background-color: var(--bar);
     border-radius: 60px;
