@@ -33,6 +33,7 @@ let AudioGainNode = AudioGain( video, maxGain );
 // Timeline Variables
 let BarTimer;
 let currentTime = 0;
+let hoveredTime;
 
 // Initialization
 video.addEventListener('loadedmetadata', (event) => {
@@ -55,15 +56,20 @@ progress.addEventListener('mousemove', e => {
     let x = e.clientX - progress.getBoundingClientRect().left;
     if( x >= 0){ 
         progress.style.setProperty("--hoverOffset",x+"px"); 
-        let hoveredTime = (x / progBar.clientWidth) * video.duration;
+        hoveredTime = (x / progBar.clientWidth) * video.duration;
         progBarLabel.innerHTML = VidDurationFormat(hoveredTime); 
     }
+});
+progress.addEventListener('click', e => {
+    video.currentTime = hoveredTime; 
+    if( playBut.getAttribute("data-state") === "replay" ) playBut.setAttribute("data-state","play");
+    MoveProgBar();
 });
 progress.addEventListener('mouseleave', e => {
     progress.style.setProperty("--hoverOffset","0px");
 });
 function MoveProgBar(){
-    let offset = Math.ceil((video.currentTime * 100 ) / video.duration);
+    let offset = (video.currentTime * 100 ) / video.duration;
     progress.style.setProperty("--barOffset", offset + "%");
 }
 function VidDurationFormat(sec) {
@@ -152,7 +158,7 @@ playBut.addEventListener("click",PlayHandler);
 video.addEventListener("click",PlayHandler);
 video.addEventListener('ended', (event) => {
     playBut.setAttribute("data-state","replay");
-    clearInterval(BarTimer);
+    setTimeout(()=> clearInterval(BarTimer) ,50);
 });
 function PlayHandler(e){
     singleClick = !singleClick;
