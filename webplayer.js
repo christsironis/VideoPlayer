@@ -13,11 +13,11 @@ let pip = document.querySelector("#pip");
 let fsBut = document.querySelector("#fullscreen");
 let progress = document.querySelector("#progress");
 let progBar = document.querySelector("#prog-bar");
-let progBarPin = document.querySelector("#prog-bar #prog-bar-pin");
+let progBarLabel = document.querySelector("#prog-bar-label");
 
 // Double-click => fullscreen Variables
-let dbClick=false;
-let dbTimer;
+let singleClick=false;
+let dbClickTimer;
 let dbDelay= 200;
 
 // Sound Variables
@@ -31,6 +31,7 @@ let volumeStep = barWidth/20;
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let AudioGainNode = AudioGain( video, maxGain );
 // Timeline Variables
+let BarTimer;
 let currentTime = 0;
 
 // Initialization
@@ -39,7 +40,6 @@ video.addEventListener('loadedmetadata', (event) => {
 });
 video.addEventListener('timeupdate', (event) => {
     let time = Math.round(video.currentTime);
-    // MoveProgBar();
     if( time === currentTime ) return;
     currentTimeSpan.innerHTML =  VidDurationFormat( currentTime = time );
 });
@@ -53,20 +53,24 @@ SetVolumeSettings( {clientX : barOffsetLeft + halfBarWidth } );
 // Timeline
 progress.addEventListener('mousemove', e => {
     let x = e.clientX - progress.getBoundingClientRect().left;
-    if( x >= 0){ progress.style.setProperty("--hoverOffset",x+"px"); }
+    if( x >= 0){ 
+        progress.style.setProperty("--hoverOffset",x+"px"); 
+        let hoveredTime = (x / progBar.clientWidth) * video.duration;
+        progBarLabel.innerHTML = VidDurationFormat(hoveredTime); 
+    }
 });
 progress.addEventListener('mouseleave', e => {
     progress.style.setProperty("--hoverOffset","0px");
 });
 function MoveProgBar(){
-    let offset = (video.currentTime ) / video.duration;
-    progress.style.setProperty("--barOffset", offset);
+    let offset = Math.ceil((video.currentTime * 100 ) / video.duration);
+    progress.style.setProperty("--barOffset", offset + "%");
 }
 function VidDurationFormat(sec) {
     let min = Math.floor(sec / 60);
-    min = (min >= 10) ? min : "0" + min;
+    min = (min >= 10 || min === 0) ? min : "0" + min;
     sec = Math.round(sec % 60);
-    sec = (sec >= 10) ? sec : "0" + sec;
+    sec = (sec >= 10 || sec === 0) ? sec : "0" + sec;
     return min + ":" + sec;
 }
 
@@ -148,44 +152,41 @@ playBut.addEventListener("click",PlayHandler);
 video.addEventListener("click",PlayHandler);
 video.addEventListener('ended', (event) => {
     playBut.setAttribute("data-state","replay");
+    clearInterval(BarTimer);
 });
-let timer;
 function PlayHandler(e){
-    timer = setTimeout(()=>{
-        if(!dbClick){
+    singleClick = !singleClick;
+    if(singleClick) {
+        dbClickTimer = setTimeout(()=>{
             if(playBut.getAttribute("data-state") === "play"){
                 playBut.setAttribute("data-state","pause");
                 audioCtx.resume().then( ()=> {
                     video.play(); 
-                    timer = setInterval(() => { MoveProgBar(); }, 20); 
+                    BarTimer = setInterval(() => { MoveProgBar(); }, 20); 
                 });
             }
             else if(playBut.getAttribute("data-state") === "pause"){
                 playBut.setAttribute("data-state","play");
-                audioCtx.suspend().then( ()=> {
-                    clearInterval(timer);
-                    video.pause(); 
-                });
+                video.pause(); 
+                clearInterval(BarTimer);
             } else{
                 playBut.setAttribute("data-state","pause");
                 video.pause();
                 video.currentTime = 0;
-                video.play();
+                video.play(); 
+                BarTimer = setInterval(() => { MoveProgBar(); }, 20); 
             }
-        }else{
-            dbClick= false;
-        }
-    }, dbDelay);
+            singleClick= false;
+        }, dbDelay);
+    }else{
+        clearTimeout( dbClickTimer );
+        FullScrHandler(e);
+    }
 }
 
 
 // Fullscreen
 fsBut.addEventListener("click",FullScrHandler);
-video.addEventListener("dblclick",(e)=>{
-    dbClick = true;
-    clearTimeout( timer );
-    FullScrHandler(e);
-});
 document.addEventListener('fullscreenchange', event => {
     if( document.fullscreenElement === videoPlayerCont){
         fsBut.setAttribute("data-state","nofull");

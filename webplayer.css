@@ -184,31 +184,30 @@ button:hover {
 }
 #bar-value{ 
     background-color: var(--bar);
-    width: 100%;
+    width: var(--barOffset);
     height: 100%;
     position: absolute;
     bottom: 0%;
     left: 0%;
-    transform: scaleX(var(--barOffset,0%));
-    transform-origin: 0 0;
 }
 #prog-bar-pin{
     position: absolute;
-    left: calc(var(--barOffset)*100%);
+    left: var(--barOffset);
     top: 0%;
     transform: translateX(-50%) scale(0);
     background-color: var(--bar);
     border-radius: 60px;
     width: 13px;
     height: 13px;
-    transition: all .1s cubic-bezier(0.4,0,1,1),-webkit-transform .1s cubic-bezier(0.4,0,1,1);
+    transition: transform .1s cubic-bezier(0.4,0,1,1),-webkit-transform .1s cubic-bezier(0.4,0,1,1);
 }
 #prog-bar-label{
     display: none;
     position: absolute;
     top: -200%;
+    left: var(--hoverOffset,0%);
     font-weight: 900;
-    transform: translateX(var(--mouseX));
+    transform: translateX(-50%);
 }
 #bar-hover{
     background-color: rgba(255,255,255,0.5);
