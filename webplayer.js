@@ -194,17 +194,17 @@ function AudioGain( audioSource ){
 fsBut.addEventListener("click",FullScrHandler);
 document.addEventListener('fullscreenchange', event => {
     if( document.fullscreenElement === videoPlayerCont){
-        fsBut.setAttribute("data-state","nofull");
-    } 
-    else if(document.fullscreenElement === null){
         fsBut.setAttribute("data-state","full");
+    } 
+    else if( !document.fullscreenElement ){
+        fsBut.setAttribute("data-state","nofull");
     }
 });
 function FullScrHandler(e){
     if( document.fullscreenElement === videoPlayerCont){
         document.exitFullscreen();
     } 
-    else if(document.fullscreenElement === null){
+    else if( !document.fullscreenElement){
         videoCont.requestFullscreen();
     }
 }
