@@ -30,7 +30,7 @@ let maxGain = 14; // plus 1 for the normal volume
 let volumeStep = halfBarWidth/40;
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let AudioGainNode = AudioGain( video );
-let showIndicator = false;
+let showIndicator = true;
 let indicatorTimeout;
 
 // Timeline Variables
@@ -189,9 +189,12 @@ function Vol_Colors_Gain( diff ){
 
 function Show_Hide_VolIndic() {
     showIndicator = !showIndicator;
-    volIndic.style.display = "block";
     if (showIndicator){
-        indicatorTimeout = setTimeout(() => volIndic.style.display = "none", 1000);
+        volIndic.style.display = "block";
+        indicatorTimeout = setTimeout(() => {
+            volIndic.style.display = "none";
+            showIndicator = false;
+        }, 1000);
     }else{
         clearTimeout(indicatorTimeout);
     }

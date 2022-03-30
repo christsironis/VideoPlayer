@@ -35,6 +35,7 @@ body{
     background-color: hsl(0deg 0% 25% / 50%);
     font-size: 3rem;
     pointer-events: none;
+    display: none;
 }
 #bot-bar{
     z-index: 2;
