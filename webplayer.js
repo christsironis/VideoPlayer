@@ -2,6 +2,7 @@ let videoCont = document.querySelector("#videoPlayerCont");
 let video = document.querySelector("#videoPlayer");
 let playBut = document.querySelector("#playpause");
 let vol = document.querySelector("#volume");
+let volIndic = document.querySelector("#vol-Indicator");
 let volBut = document.querySelector("#volume #vol-but");
 let volBar = document.querySelector("#volume #vol-percent-bar");
 let volPin = document.querySelector("#volume #vol-percent-bar #vol-pin");
@@ -25,10 +26,12 @@ let barWidth = Math.round( volBar.clientWidth ) || 100;
 let halfBarWidth = Math.round( barWidth / 2 );
 let barOffsetLeft = volBar.getBoundingClientRect().left;
 let gain = 1;
-let maxGain = 15;
-let volumeStep = halfBarWidth/20;
+let maxGain = 14; // plus 1 for the normal volume
+let volumeStep = halfBarWidth/40;
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let AudioGainNode = AudioGain( video, maxGain );
+let AudioGainNode = AudioGain( video );
+let showIndicator = false;
+let indicatorTimeout;
 
 // Timeline Variables
 let BarTimer;
@@ -48,7 +51,7 @@ video.addEventListener('canplaythrough', (event) => {
     console.log('I think I can play through the entire ' +
     'video without ever having to stop to buffer.');
 });
-video.src="videoplay.mp4";
+video.src="vindeo.mp4";
 SetVolumeSettings( {clientX : barOffsetLeft + halfBarWidth } );
 
 // Timeline
@@ -85,7 +88,7 @@ playBut.addEventListener("click",PlayHandler);
 video.addEventListener("click",PlayHandler);
 video.addEventListener('ended', (event) => {
     playBut.setAttribute("data-state","replay");
-    setTimeout(()=> clearInterval(BarTimer) ,50);
+    setTimeout(()=> clearTimeout(BarTimer) ,50);
 });
 function PlayHandler(e){
     singleClick = !singleClick;
@@ -163,6 +166,8 @@ function Vol_Colors_Gain( diff ){
     if( upperHalf > 0 ){
         vol.setAttribute("data-state","extreme");
         gain = ( upperHalf / halfBarWidth ) * maxGain;
+        volIndic.innerHTML = Math.round(gain++ * 100) + 100 + "%";
+        // gain++; // adding the 1 for the normal volume
         normBarsCol = 50;
         extBarsCol = ( upperHalf * 100) / barWidth ;
     }else{
@@ -174,10 +179,22 @@ function Vol_Colors_Gain( diff ){
         gain = diff / halfBarWidth;
         normBarsCol = diff;
         extBarsCol = 0;
+        volIndic.innerHTML = Math.round( gain * 100 ) + "%";
     }
     AudioGainNode.gain.value = gain;
+    Show_Hide_VolIndic();
     volBar.style.setProperty("--vol-Normal", normBarsCol + "%");
     volBar.style.setProperty("--vol-Extreme",extBarsCol  + "%");
+}
+
+function Show_Hide_VolIndic() {
+    showIndicator = !showIndicator;
+    volIndic.style.display = "block";
+    if (showIndicator){
+        indicatorTimeout = setTimeout(() => volIndic.style.display = "none", 1000);
+    }else{
+        clearTimeout(indicatorTimeout);
+    }
 }
 function MouseUp(e) {
     document.onmousemove= null;
