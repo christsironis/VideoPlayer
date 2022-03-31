@@ -26,7 +26,7 @@ let barWidth = Math.round( volBar.clientWidth ) || 100;
 let halfBarWidth = Math.round( barWidth / 2 );
 let barOffsetLeft = volBar.getBoundingClientRect().left;
 let gain = 1;
-let maxGain = 14; // plus 1 for the normal volume
+let maxGain = 31.6; // plus 1 for the normal volume
 let volumeStep = halfBarWidth/40;
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let AudioGainNode = AudioGain( video );
@@ -166,8 +166,29 @@ function Vol_Colors_Gain( diff ){
     if( upperHalf > 0 ){
         vol.setAttribute("data-state","extreme");
         gain = ( upperHalf / halfBarWidth ) * maxGain;
-        volIndic.innerHTML = Math.round(gain++ * 100) + 100 + "%";
         // gain++; // adding the 1 for the normal volume
+        console.log(gain,gain*100)
+        if ( gain<=3.16){
+            volIndic.innerHTML = Math.round(gain/3.16 * 100) + 100+ "%";
+        }
+        else if( gain<=5.62 ){
+            volIndic.innerHTML = Math.round(gain/5.62 * 200) + 100+ "%";
+        }
+        else if( gain<=10 ){
+            volIndic.innerHTML = Math.round(gain/10 * 300) + 100+ "%";
+        }
+        else if( gain<=13.34 ){
+            volIndic.innerHTML = Math.round(gain/13.34 * 400)+ 100+ "%";             
+        }
+        else if( gain<=17.78 ){
+            volIndic.innerHTML = Math.round(gain/17.78 * 500)+ 100+ "%";             
+        }
+        else if( gain<=23.71 ){
+            volIndic.innerHTML = Math.round(gain/23.71 * 600)+ 100+ "%";             
+        }
+        else{
+            volIndic.innerHTML = Math.round(gain/31.6 * 800) + "%";             
+        }
         normBarsCol = 50;
         extBarsCol = ( upperHalf * 100) / barWidth ;
     }else{
@@ -181,7 +202,7 @@ function Vol_Colors_Gain( diff ){
         extBarsCol = 0;
         volIndic.innerHTML = Math.round( gain * 100 ) + "%";
     }
-    AudioGainNode.gain.value = gain;
+        AudioGainNode.gain.value = gain;
     Show_Hide_VolIndic();
     volBar.style.setProperty("--vol-Normal", normBarsCol + "%");
     volBar.style.setProperty("--vol-Extreme",extBarsCol  + "%");
