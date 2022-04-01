@@ -26,7 +26,7 @@ let barWidth = Math.round( volBar.clientWidth ) || 100;
 let halfBarWidth = Math.round( barWidth / 2 );
 let barOffsetLeft = volBar.getBoundingClientRect().left;
 let gain = 1;
-let maxGain = 31.6; // plus 1 for the normal volume
+let maxGain = 30.6; // minus 1 for the normal volume
 let volumeStep = halfBarWidth/40;
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let AudioGainNode = AudioGain( video );
@@ -165,7 +165,7 @@ function Vol_Colors_Gain( diff ){
     let upperHalf = diff - halfBarWidth;
     if( upperHalf > 0 ){
         vol.setAttribute("data-state","extreme");
-        gain = ( upperHalf / halfBarWidth ) * (maxGain-1);
+        gain = ( upperHalf / halfBarWidth ) * maxGain;
         gain++; // adding the 1 for the normal volume
         normBarsCol = 50;
         extBarsCol = ( upperHalf * 100) / barWidth ;
@@ -201,12 +201,17 @@ function Show_Hide_VolIndic() {
     showIndicator = !showIndicator;
     if (showIndicator){
         volIndic.style.display = "block";
+        clearTimeout(indicatorTimeout);
         indicatorTimeout = setTimeout(() => {
             volIndic.style.display = "none";
             showIndicator = false;
         }, 1000);
     }else{
         clearTimeout(indicatorTimeout);
+        indicatorTimeout = setTimeout(() => {
+            volIndic.style.display = "none";
+            showIndicator = false;
+        }, 1000);
     }
 }
 function MouseUp(e) {
