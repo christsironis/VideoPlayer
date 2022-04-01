@@ -165,32 +165,20 @@ function Vol_Colors_Gain( diff ){
     let upperHalf = diff - halfBarWidth;
     if( upperHalf > 0 ){
         vol.setAttribute("data-state","extreme");
-        gain = ( upperHalf / halfBarWidth ) * maxGain;
-        // gain++; // adding the 1 for the normal volume
-        console.log(gain,gain*100)
-        if ( gain<=3.16){
-            volIndic.innerHTML = Math.round(gain/3.16 * 100) + 100+ "%";
-        }
-        else if( gain<=5.62 ){
-            volIndic.innerHTML = Math.round(gain/5.62 * 200) + 100+ "%";
-        }
-        else if( gain<=10 ){
-            volIndic.innerHTML = Math.round(gain/10 * 300) + 100+ "%";
-        }
-        else if( gain<=13.34 ){
-            volIndic.innerHTML = Math.round(gain/13.34 * 400)+ 100+ "%";             
-        }
-        else if( gain<=17.78 ){
-            volIndic.innerHTML = Math.round(gain/17.78 * 500)+ 100+ "%";             
-        }
-        else if( gain<=23.71 ){
-            volIndic.innerHTML = Math.round(gain/23.71 * 600)+ 100+ "%";             
-        }
-        else{
-            volIndic.innerHTML = Math.round(gain/31.6 * 800) + "%";             
-        }
+        gain = ( upperHalf / halfBarWidth ) * (maxGain-1);
+        gain++; // adding the 1 for the normal volume
         normBarsCol = 50;
         extBarsCol = ( upperHalf * 100) / barWidth ;
+        volIndic.innerHTML = Math.round(
+            1.20314*Math.pow(10,-7)*Math.pow(gain,7)
+           +0.00000148274*Math.pow(gain,6)
+           -0.000589567*Math.pow(gain,5)
+           +0.018608244*Math.pow(gain,4)
+           -0.135460067*Math.pow(gain,3)
+           -1.973545971*Math.pow(gain,2)
+           +55.65688507*Math.pow(gain,1)
+           +46.43410069
+       ) +"%"; 
     }else{
         if(diff > halfBarWidth/2 ){
             vol.setAttribute("data-state","full");
@@ -198,11 +186,12 @@ function Vol_Colors_Gain( diff ){
             vol.setAttribute("data-state","half");
         }
         gain = diff / halfBarWidth;
+        volIndic.innerHTML = Math.round( gain * 100 ) + "%";
         normBarsCol = diff;
         extBarsCol = 0;
-        volIndic.innerHTML = Math.round( gain * 100 ) + "%";
     }
-        AudioGainNode.gain.value = gain;
+    console.log(gain)            
+    AudioGainNode.gain.value = gain;
     Show_Hide_VolIndic();
     volBar.style.setProperty("--vol-Normal", normBarsCol + "%");
     volBar.style.setProperty("--vol-Extreme",extBarsCol  + "%");
