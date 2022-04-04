@@ -189,8 +189,7 @@ function Vol_Colors_Gain( diff ){
         volIndic.innerHTML = Math.round( gain * 100 ) + "%";
         normBarsCol = diff;
         extBarsCol = 0;
-    }
-    console.log(gain)            
+    }          
     AudioGainNode.gain.value = gain;
     Show_Hide_VolIndic();
     volBar.style.setProperty("--vol-Normal", normBarsCol + "%");
