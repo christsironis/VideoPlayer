@@ -1,5 +1,6 @@
 let videoCont = document.querySelector("#videoPlayerCont");
 let video = document.querySelector("#videoPlayer");
+let setMenu = document.querySelector("#menu-panel");
 let playBut = document.querySelector("#playpause");
 let vol = document.querySelector("#volume");
 let volIndic = document.querySelector("#vol-Indicator");
@@ -224,6 +225,11 @@ function AudioGain( audioSource ){
     gainNode.connect(audioCtx.destination);
     return gainNode;
 }
+// Settings
+settings.addEventListener("click",()=>{
+    setMenu.classList.toggle("show");
+})
+
 // Fullscreen
 fsBut.addEventListener("click",FullScrHandler);
 document.addEventListener('fullscreenchange', event => {

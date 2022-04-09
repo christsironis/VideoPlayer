@@ -37,23 +37,86 @@ body{
     pointer-events: none;
     display: none;
 }
-#menu-panel{
+.panel{
     position: absolute;
     background: rgba(28,28,28,.9);
-    bottom: 0;
-    right: 0;
+    bottom: calc( 0% + 75px );
+    right: 10px;
     z-index: 1;
-    /* display: flex; */
-    /* width: 24%;
-    height: 20%; */
+    padding: 10px 0;
+    width: 300px;
+    border-radius: 10px;
+    display: none;
 }
-#menu-panel #speed{
+.disFlex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.panel .values{
+    flex-wrap: wrap;
+}
+.panel .values .value{
+    /* width: 50%; */
+    text-align: center;
+    padding: 5px 5%;
+    margin: 0 10%;
+}
+.panel input{
+    width: 50px;
+    background: transparent;
+    text-align: center;
+    border: navajowhite;
+    color: white;
+}
+.panel .head{
+    padding: 5px 10px;
+    border-bottom: 2px solid #00000085;
+    margin: 0 30px;
+}
+.arrowSVG{
+    fill: white;
+    width: 14px;
+}
+.panel .arrows .arrowSVG{
+    padding: 10px 10px;
+    margin: 10px 0;
+}
+.panel .itemText{
+    margin: 0 auto 0 10px;
+    cursor: pointer;
+}
+#menu-panel.show{
+    display: block;
+}
+#menu-panel .itemSVG{
+    fill: white;
+    width: 28px;
+}
+#menu-panel .menuItem{
     font-size: 1rem;
     display: flex;
-    padding: 5px;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 10px;
 }
-#speedChoice{
-    margin: 0px 1vw 0px 10vw;
+#menu-panel .menuItem:hover,
+.panel .values .value:hover,
+#speedPanel .arrows .arrowSVG:hover,
+.panel .head:hover
+{
+    cursor: pointer;
+    border-radius: 20px;
+    background-color: rgba(255,255,255,.1);
+}
+
+#menu-panel .itemChoice{
+    margin-right: 10px;
+}
+
+#speedPanel #speedRange{
+    justify-content: space-around;
+    
 }
 #bot-bar{
     z-index: 2;
