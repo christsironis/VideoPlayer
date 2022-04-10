@@ -1,8 +1,8 @@
-const videoCont = document.querySelector("#videoPlayerCont");
+const videoCont = document.querySelector("#videoContainer");
 const video = document.querySelector("#videoPlayer");
-const settingsPanel = document.querySelector("#settings-panel");
+const settingsPanel = document.querySelector("#settingsPanel");
 const settingsItems = settingsPanel.querySelectorAll(".settingsItem");
-const settPanels = videoCont.querySelectorAll(".panel:not(#settings-panel)")
+const itemPanels = videoCont.querySelectorAll(".panel:not(#settingsPanel)")
 const speedPanel = document.querySelector("#speedPanel");
 const speedValue = document.querySelector("#speedPanel #speedValue");
 const playBut = document.querySelector("#playpause");
@@ -231,7 +231,7 @@ function AudioGain( audioSource ){
 }
 //// Settings
 settingsBut.addEventListener("click",()=>{
-    settPanels.forEach(item=>{
+    itemPanels.forEach(item=>{
         item.classList.remove("show");
     });
     settingsPanel.classList.toggle("show");
@@ -254,7 +254,7 @@ document.querySelectorAll("#speedPanel #speedRange .arrowSVG").forEach(item=>{
     item.addEventListener("click",()=>{
         let rate = parseFloat(speedValue.value);
         rate = (rate + parseFloat(item.getAttribute("data-step")) ).toFixed(2);
-        if( rate < 0.1 ) rate = 0.10;
+        if( rate < 0.1 ) rate = "0.10";
         speedValue.value = rate;
         video.playbackRate = rate;
     })
@@ -270,7 +270,7 @@ document.querySelectorAll("#speedPanel .values .value").forEach(item=>{
 // Fullscreen
 fsBut.addEventListener("click",FullScrHandler);
 document.addEventListener('fullscreenchange', event => {
-    if( document.fullscreenElement === videoPlayerCont){
+    if( document.fullscreenElement === videoContainer){
         fsBut.setAttribute("data-state","full");
     } 
     else if( !document.fullscreenElement ){
@@ -278,7 +278,7 @@ document.addEventListener('fullscreenchange', event => {
     }
 });
 function FullScrHandler(e){
-    if( document.fullscreenElement === videoPlayerCont){
+    if( document.fullscreenElement === videoContainer){
         document.exitFullscreen();
     } 
     else if( !document.fullscreenElement){
