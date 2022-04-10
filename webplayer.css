@@ -24,6 +24,19 @@ body{
     position: absolute;
     top: 0;
 }
+#video-controls .svg{
+    fill: white;
+    width: 48px;
+    height: 48px;
+    transition: all 0.1s ease-in-out;
+}
+.svg path{
+    transition: d .2s ease-in-out;
+}
+#timer{
+    flex-grow: 1;
+    padding-left: 10px;
+}
 #vol-Indicator{
     position: absolute;
     top: 10%;
@@ -37,6 +50,7 @@ body{
     pointer-events: none;
     display: none;
 }
+
 .panel{
     position: absolute;
     background: rgba(28,28,28,.9);
@@ -44,7 +58,7 @@ body{
     right: 10px;
     z-index: 1;
     padding: 10px 0;
-    width: 300px;
+    width: 240px;
     border-radius: 10px;
     display: none;
 }
@@ -52,15 +66,6 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.panel .values{
-    flex-wrap: wrap;
-}
-.panel .values .value{
-    /* width: 50%; */
-    text-align: center;
-    padding: 5px 5%;
-    margin: 0 10%;
 }
 .panel input{
     width: 50px;
@@ -71,52 +76,65 @@ body{
 }
 .panel .head{
     padding: 5px 10px;
-    border-bottom: 2px solid #00000085;
-    margin: 0 30px;
+    cursor: pointer;
+    border-radius: 20px;
+    /* margin: 0 10px; */
 }
 .arrowSVG{
     fill: white;
     width: 14px;
 }
-.panel .arrows .arrowSVG{
-    padding: 10px 10px;
-    margin: 10px 0;
+.panel .values{
+    flex-wrap: wrap;
+}
+.panel .values .value{
+    cursor: pointer;
+    border-radius: 20px;
+    text-align: center;
+    padding: 5px 5%;
+    margin: 2% 10%;
 }
 .panel .itemText{
     margin: 0 auto 0 10px;
     cursor: pointer;
 }
-#menu-panel.show{
-    display: block;
-}
-#menu-panel .itemSVG{
+
+#settings-panel .itemSVG{
     fill: white;
     width: 28px;
 }
-#menu-panel .menuItem{
+#settings-panel .settingsItem{
     font-size: 1rem;
     display: flex;
     align-items: center;
     cursor: pointer;
     padding: 10px 10px;
+    border-radius: 20px;
 }
-#menu-panel .menuItem:hover,
+#settings-panel .itemChoice{
+    margin-right: 10px;
+}
+#settings-panel .settingsItem:hover,
 .panel .values .value:hover,
 #speedPanel .arrows .arrowSVG:hover,
 .panel .head:hover
 {
-    cursor: pointer;
-    border-radius: 20px;
     background-color: rgba(255,255,255,.1);
 }
-
-#menu-panel .itemChoice{
-    margin-right: 10px;
-}
-
 #speedPanel #speedRange{
     justify-content: space-around;
-    
+    box-shadow: 2px 2px black, -1px -1px #444444;
+    border-radius: 20px;
+    margin: 4% 4%;
+}
+#speedPanel .arrows{
+    line-height: 0;
+}
+#speedPanel .arrows .arrowSVG{
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 10px 10px;
+    margin: 5px 0px;
 }
 #bot-bar{
     z-index: 2;
@@ -146,9 +164,6 @@ button:hover {
     /* border-radius: 5px;
     background-color: #7070704a; */
  }
-.svg path{
-    transition: d .2s ease-in-out;
-}
 
 #playpause[data-state="pause"] path{
     d: path('M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z');
@@ -170,6 +185,7 @@ button:hover {
     d: path('m 10,22 4,0 0,4 2,0 0,-6 -6,0 0,2 0,0 z');
 }
 
+
 #volume[data-state="extreme"] path{
     fill: red;
 }
@@ -179,7 +195,6 @@ button:hover {
 #volume[data-state="muted"] #vol-muted{
     opacity: 1;
 }
-
 #volume{
     display: flex;
     flex-direction: row;
@@ -234,16 +249,6 @@ button:hover {
     left: 50%;
     width: var(--vol-Extreme,0%);
     background-color: rgb(248, 0, 0);
-}
-#timer{
-    flex-grow: 1;
-    padding-left: 10px;
-}
-#video-controls .svg{
-    fill: white;
-    width: 48px;
-    height: 48px;
-    transition: all 0.1s ease-in-out;
 }
 
 
@@ -310,4 +315,9 @@ button:hover {
     position: absolute;
     bottom: 0%;
     left: 0%;
+}
+
+
+.show{
+    display: block;
 }

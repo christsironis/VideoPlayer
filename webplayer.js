@@ -1,26 +1,30 @@
-let videoCont = document.querySelector("#videoPlayerCont");
-let video = document.querySelector("#videoPlayer");
-let setMenu = document.querySelector("#menu-panel");
-let playBut = document.querySelector("#playpause");
-let vol = document.querySelector("#volume");
-let volIndic = document.querySelector("#vol-Indicator");
-let volBut = document.querySelector("#volume #vol-but");
-let volBar = document.querySelector("#volume #vol-percent-bar");
-let volPin = document.querySelector("#volume #vol-percent-bar #vol-pin");
-let currentTimeSpan = document.querySelector("#currentTime");
-let totalTime = document.querySelector("#totalTime");
-let subs = document.querySelector("#subs");
-let settings = document.querySelector("#settings");
-let pip = document.querySelector("#pip");
-let fsBut = document.querySelector("#fullscreen");
-let progress = document.querySelector("#progress");
-let progBar = document.querySelector("#prog-bar");
-let progBarLabel = document.querySelector("#prog-bar-label");
+const videoCont = document.querySelector("#videoPlayerCont");
+const video = document.querySelector("#videoPlayer");
+const settingsPanel = document.querySelector("#settings-panel");
+const settingsItems = settingsPanel.querySelectorAll(".settingsItem");
+const settPanels = videoCont.querySelectorAll(".panel:not(#settings-panel)")
+const speedPanel = document.querySelector("#speedPanel");
+const speedValue = document.querySelector("#speedPanel #speedValue");
+const playBut = document.querySelector("#playpause");
+const vol = document.querySelector("#volume");
+const volIndic = document.querySelector("#vol-Indicator");
+const volBut = document.querySelector("#volume #vol-but");
+const volBar = document.querySelector("#volume #vol-percent-bar");
+const volPin = document.querySelector("#volume #vol-percent-bar #vol-pin");
+const currentTimeSpan = document.querySelector("#currentTime");
+const totalTime = document.querySelector("#totalTime");
+const subs = document.querySelector("#subs");
+const settingsBut = document.querySelector("#settings");
+const pip = document.querySelector("#pip");
+const fsBut = document.querySelector("#fullscreen");
+const progress = document.querySelector("#progress");
+const progBar = document.querySelector("#prog-bar");
+const progBarLabel = document.querySelector("#prog-bar-label");
 
 // Double-click => fullscreen Variables
 let singleClick=false;
 let dbClickTimer;
-let dbDelay= 200;
+const dbDelay= 200;
 
 // Sound Variables
 let barWidth = Math.round( volBar.clientWidth ) || 100;
@@ -225,10 +229,43 @@ function AudioGain( audioSource ){
     gainNode.connect(audioCtx.destination);
     return gainNode;
 }
-// Settings
-settings.addEventListener("click",()=>{
-    setMenu.classList.toggle("show");
-})
+//// Settings
+settingsBut.addEventListener("click",()=>{
+    settPanels.forEach(item=>{
+        item.classList.remove("show");
+    });
+    settingsPanel.classList.toggle("show");
+});
+settingsItems.forEach(item=>{
+    item.addEventListener("click",()=>{
+        settingsPanel.classList.toggle("show");
+        videoCont.querySelector(`[data-panel='${item.getAttribute("data-but")}']` ).classList.toggle("show");
+    });
+});
+videoCont.querySelectorAll(".panel .head").forEach(item=>{
+    item.addEventListener("click",()=>{
+        item.parentElement.classList.remove("show");
+        settingsPanel.classList.toggle("show");
+    });
+});
+
+// SpeedPanel
+document.querySelectorAll("#speedPanel #speedRange .arrowSVG").forEach(item=>{
+    item.addEventListener("click",()=>{
+        let rate = parseFloat(speedValue.value);
+        rate = (rate + parseFloat(item.getAttribute("data-step")) ).toFixed(2);
+        if( rate < 0.1 ) rate = 0.10;
+        speedValue.value = rate;
+        video.playbackRate = rate;
+    })
+});
+document.querySelectorAll("#speedPanel .values .value").forEach(item=>{
+    item.addEventListener("click",()=>{
+        const rate = parseFloat(item.innerText);
+        speedValue.value = rate;
+        video.playbackRate = rate;
+    })
+});
 
 // Fullscreen
 fsBut.addEventListener("click",FullScrHandler);
