@@ -1,5 +1,6 @@
 const videoCont = document.querySelector("#videoContainer");
 const videoControls = document.querySelector("#videoContainer #video-controls");
+const videoWrapper = document.querySelector("#videoContainer #videoWrapper");
 const video = document.querySelector("#videoPlayer");
 const botBar = document.querySelector("#videoContainer #bot-bar");
 const settingsPanel = document.querySelector("#settingsPanel");
@@ -22,7 +23,6 @@ const progress = document.querySelector("#progress");
 const progBar = document.querySelector("#prog-bar");
 const progBarLabel = document.querySelector("#prog-bar-label");
 
-let delayCtrlHide = false;
 let delayCtrlTimeout;
 
 // Double-click => fullscreen Variables
@@ -98,11 +98,13 @@ function MoveProgBar(){
     progress.style.setProperty("--barOffset", offset + "%");
 }
 function VidDurationFormat( sec , roundType = "floor" ) {
-    let min = Math.floor(sec / 60);
+    let min = Math.floor( (sec/60) % 60 );
+    let hours = Math.floor(sec / 3600);
+    hours = ( hours >= 10 || hours === 0 ) ? hours : "0" + hours;
     min = ( min >= 10 || min === 0 ) ? min : "0" + min;
     sec = (roundType === "floor") ? Math.floor(sec % 60) : Math.round(sec % 60);
     sec = ( sec >= 10 ) ? sec : "0" + sec;
-    return min + ":" + sec;
+    return ( hours !== 0 ) ? hours +":"+ min +":"+ sec : min +":"+ sec;
 }
 
 // Play - Pause - Replay
@@ -280,23 +282,22 @@ function ChangeSelectedValue(value,panel){
 // RatioPanel
 videoCont.querySelector("#ratioPanel input").addEventListener('change', (e)=>{
     videoCont.querySelector("#ratioPanel input").reportValidity();
-    const value = e.target.value;
-    value.replace(/[^0-9:]/g,'');
-    const ratio = { ...(/(?<first>[0-9]+):(?<second>[0-9]+)/g).exec( value ).groups };
+    let value = e.target.value;
+    value = value.replace(/[^0-9:]/g,'');
+    const ratio = { ...(/(?<first>[0-9]+\s?)[:/](?<second>\s?[0-9]+)/g).exec( value ).groups };
     e.target.value = `${ratio.first}:${ratio.second}`;
     ChangeSelectedValue(`${ratio.first}:${ratio.second}`,"ratio");
-    video.style.setProperty("--ratio",`${ratio.first} / ${ratio.second}`);
+    videoWrapper.style.setProperty("--ratio",`${ratio.first} / ${ratio.second}`);
 });
 videoCont.querySelectorAll("#ratioPanel .values .value").forEach(item=>{
     item.addEventListener("click",()=>{
         videoCont.querySelector("#ratioPanel .values .selectedValue")?.classList.remove("selectedValue");
-        const value = item.innerHTML;
-        value.replace(/[^0-9:]/g,'');
-        const ratio = { ...(/(?<first>[0-9]+):(?<second>[0-9]+)/g).exec( value ).groups };
+        let value = item.getAttribute("data-value");
         item.classList.add("selectedValue");
-        videoCont.querySelector("#ratioPanel input").value = `${ratio.first}:${ratio.second}`;
-        videoCont.querySelector("[data-but='ratio'] .itemChoice").innerHTML = `${ratio.first}:${ratio.second}`;
-        video.style.setProperty("--ratio",`${ratio.first} / ${ratio.second}`);
+        videoWrapper.style.setProperty("--ratio", value);
+        value = value.replace("/",':');
+        videoCont.querySelector("#ratioPanel input").value = value;
+        videoCont.querySelector("[data-but='ratio'] .itemChoice").innerHTML = value;
     });
 });
 
