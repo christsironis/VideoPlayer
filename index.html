@@ -51,7 +51,7 @@
                         <path d="M4520 4273 c-101 -39 -167 -95 -209 -177 -22 -43 -26 -64 -26 -136 0 -100 24 -159 90 -226 65 -65 125 -88 225 -88 101 0 160 23 225 89 66 65 89 124 89 225 0 100 -23 160 -88 225 -61 61 -126 88 -216 92 -41 1 -82 0 -90 -4z"/>
                         <path d="M4530 2991 c-91 -18 -176 -86 -220 -176 -21 -41 -25 -65 -25 -135 0 -72 4 -93 26 -136 56 -109 156 -175 272 -182 132 -8 241 58 310 187 14 27 19 58 20 126 1 76 -2 98 -23 140 -30 62 -92 124 -150 153 -49 23 -153 35 -210 23z"/>
                         </g>
-                        </svg>
+                    </svg>
                     <span class="itemText">Aspect Ratio</span>
                     <span class="itemChoice">Default</span> 
                     <svg viewBox="0 0 300.000000 300.000000" class="arrowSVG">
@@ -70,7 +70,7 @@
                     </svg>
                     <span class="itemText">Speed</span>
                 </div>
-                <div id="speedRange" class="disFlex">
+                <div id="speedRange" class="range disFlex">
                     <div class="arrows">
                         <svg class="arrowSVG" data-step="-0.5" viewBox="0 0 300.000000 300.000000">
                             <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)">
@@ -84,7 +84,7 @@
                             </g>
                         </svg>
                     </div>
-                    <input id="speedValue" value="1.00">
+                    <input id="speedValue" type="text" value="1.00">
                     <div class="arrows">
                         <svg class="arrowSVG" data-step="0.1" viewBox="0 0 300.000000 300.000000">
                             <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)" fill="#ffffff" stroke="none">
@@ -109,7 +109,7 @@
                     <div class="value">
                         0.75
                     </div>
-                    <div class="value">
+                    <div class="value selectedValue">
                         1.00
                     </div>
                     <div class="value">
@@ -123,6 +123,39 @@
                     </div>
                     <div class="value">
                         2.00
+                    </div>
+                </div>
+            </div>
+            <div class="panel" id="ratioPanel" data-panel="ratio">
+                <div class="head disFlex">
+                    <svg viewBox="0 0 300.000000 300" class="arrowSVG">
+                        <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)">
+                        <path d="M2054 2975 c-66 -33 -1365 -1331 -1389 -1387 -19 -48 -19 -128 0 -176 24 -56 1323 -1354 1389 -1387 64 -32 118 -32 183 0 69 35 106 88 111 165 8 111 32 82 -606 723 l-586 587 586 588 c638 640 614 611 606 722 -5 77 -42 130 -111 165 -65 32 -119 32 -183 0z"/>
+                        </g>
+                    </svg>
+                    <span class="itemText">Aspect Ratio</span>
+                </div>
+                <div id="ratioRange" class="range disFlex">
+                    <input id="ratioValue" pattern="[0-9]+:[0-9]+" type="text" value="16:9">
+                </div>
+                <div class="values disFlex">
+                    <div class="value selectedValue">
+                        16:9
+                    </div>
+                    <div class="value">
+                        16:10
+                    </div>
+                    <div class="value">
+                        1:1
+                    </div>
+                    <div class="value">
+                        3:2
+                    </div>
+                    <div class="value">
+                        4:3
+                    </div>
+                    <div class="value">
+                        9:16
                     </div>
                 </div>
             </div>

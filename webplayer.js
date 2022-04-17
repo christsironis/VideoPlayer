@@ -1,8 +1,9 @@
 const videoCont = document.querySelector("#videoContainer");
+const videoControls = document.querySelector("#videoContainer #video-controls");
 const video = document.querySelector("#videoPlayer");
+const botBar = document.querySelector("#videoContainer #bot-bar");
 const settingsPanel = document.querySelector("#settingsPanel");
 const settingsItems = settingsPanel.querySelectorAll(".settingsItem");
-const itemPanels = videoCont.querySelectorAll(".panel:not(#settingsPanel)")
 const speedPanel = document.querySelector("#speedPanel");
 const speedValue = document.querySelector("#speedPanel #speedValue");
 const playBut = document.querySelector("#playpause");
@@ -20,6 +21,9 @@ const fsBut = document.querySelector("#fullscreen");
 const progress = document.querySelector("#progress");
 const progBar = document.querySelector("#prog-bar");
 const progBarLabel = document.querySelector("#prog-bar-label");
+
+let delayCtrlHide = false;
+let delayCtrlTimeout;
 
 // Double-click => fullscreen Variables
 let singleClick=false;
@@ -68,11 +72,24 @@ progress.addEventListener('mousemove', e => {
         progBarLabel.innerHTML = VidDurationFormat( hoveredTime ); 
     }
 });
-progress.addEventListener('click', e => {
-    video.currentTime = hoveredTime; 
-    if( playBut.getAttribute("data-state") === "replay" ) playBut.setAttribute("data-state","play");
-    MoveProgBar();
+progress.addEventListener('mousedown', e => {
+    document.onmousemove= TimelineMouseMove;
+    document.onmouseup= TimelineMouseUp;
 });
+function TimelineMouseMove(e){
+    let x = e.clientX - progress.getBoundingClientRect().left;
+    if( x >= 0){ 
+        video.currentTime = hoveredTime; 
+        MoveProgBar();
+    }
+};
+function TimelineMouseUp(e){
+    if( playBut.getAttribute("data-state") === "replay" ) playBut.setAttribute("data-state","play");
+    video.currentTime = hoveredTime; 
+    MoveProgBar();
+    document.onmousemove= null;
+    document.onmouseup= null;
+};
 progress.addEventListener('mouseleave', e => {
     progress.style.setProperty("--hoverOffset","0px");
 });
@@ -231,7 +248,7 @@ function AudioGain( audioSource ){
 }
 //// Settings
 settingsBut.addEventListener("click",()=>{
-    itemPanels.forEach(item=>{
+    videoCont.querySelectorAll(".panel:not(#settingsPanel)").forEach(item=>{
         item.classList.remove("show");
     });
     settingsPanel.classList.toggle("show");
@@ -239,7 +256,8 @@ settingsBut.addEventListener("click",()=>{
 settingsItems.forEach(item=>{
     item.addEventListener("click",()=>{
         settingsPanel.classList.toggle("show");
-        videoCont.querySelector(`[data-panel='${item.getAttribute("data-but")}']` ).classList.toggle("show");
+        const dataButForPanel = item.getAttribute("data-but");
+        videoCont.querySelector(`[data-panel='${dataButForPanel}']` ).classList.toggle("show");
     });
 });
 videoCont.querySelectorAll(".panel .head").forEach(item=>{
@@ -248,22 +266,65 @@ videoCont.querySelectorAll(".panel .head").forEach(item=>{
         settingsPanel.classList.toggle("show");
     });
 });
+function ChangeSelectedValue(value,panel){
+    videoCont.querySelector(`[data-but='${panel}']` ).querySelector(".itemChoice").innerHTML=value;
+    videoCont.querySelector(`#${panel}Panel .values .selectedValue`)?.classList.remove("selectedValue");
+    const items = [...videoCont.querySelectorAll(`#${panel}Panel .values .value`)];
+    for(let item of items){
+        if(item.innerText == value) {
+            item.classList.add("selectedValue");
+            break;
+        }
+    };
+}
+// RatioPanel
+videoCont.querySelector("#ratioPanel input").addEventListener('change', (e)=>{
+    videoCont.querySelector("#ratioPanel input").reportValidity();
+    const value = e.target.value;
+    value.replace(/[^0-9:]/g,'');
+    const ratio = { ...(/(?<first>[0-9]+):(?<second>[0-9]+)/g).exec( value ).groups };
+    e.target.value = `${ratio.first}:${ratio.second}`;
+    ChangeSelectedValue(`${ratio.first}:${ratio.second}`,"ratio");
+    video.style.setProperty("--ratio",`${ratio.first} / ${ratio.second}`);
+});
+videoCont.querySelectorAll("#ratioPanel .values .value").forEach(item=>{
+    item.addEventListener("click",()=>{
+        videoCont.querySelector("#ratioPanel .values .selectedValue")?.classList.remove("selectedValue");
+        const value = item.innerHTML;
+        value.replace(/[^0-9:]/g,'');
+        const ratio = { ...(/(?<first>[0-9]+):(?<second>[0-9]+)/g).exec( value ).groups };
+        item.classList.add("selectedValue");
+        videoCont.querySelector("#ratioPanel input").value = `${ratio.first}:${ratio.second}`;
+        videoCont.querySelector("[data-but='ratio'] .itemChoice").innerHTML = `${ratio.first}:${ratio.second}`;
+        video.style.setProperty("--ratio",`${ratio.first} / ${ratio.second}`);
+    });
+});
 
 // SpeedPanel
-document.querySelectorAll("#speedPanel #speedRange .arrowSVG").forEach(item=>{
+videoCont.querySelector("#speedPanel input").addEventListener('change', (e)=>{
+    let rate = parseFloat(e.target.value.replace(/[^0-9.]/g,'')).toFixed(2);
+    if( rate < 0.1 || isNaN(rate) ) rate = "0.10";
+    e.target.value = rate;
+    ChangeSelectedValue(rate,"speed");
+});
+videoCont.querySelectorAll("#speedPanel .range .arrows .arrowSVG").forEach(item=>{
     item.addEventListener("click",()=>{
         let rate = parseFloat(speedValue.value);
         rate = (rate + parseFloat(item.getAttribute("data-step")) ).toFixed(2);
-        if( rate < 0.1 ) rate = "0.10";
+        if( rate < 0.1 || isNaN(rate) ) rate = "0.10";
         speedValue.value = rate;
         video.playbackRate = rate;
-    })
+        ChangeSelectedValue(rate,"speed");
+    });
 });
-document.querySelectorAll("#speedPanel .values .value").forEach(item=>{
+videoCont.querySelectorAll("#speedPanel .values .value").forEach(item=>{
     item.addEventListener("click",()=>{
-        const rate = parseFloat(item.innerText);
+        videoCont.querySelector("#speedPanel .values .selectedValue")?.classList.remove("selectedValue");
+        const rate = parseFloat(item.innerText).toFixed(2);;
         speedValue.value = rate;
         video.playbackRate = rate;
+        item.classList.add("selectedValue");
+        videoCont.querySelector("[data-but='speed'] .itemChoice").innerHTML=rate;
     })
 });
 
@@ -272,9 +333,11 @@ fsBut.addEventListener("click",FullScrHandler);
 document.addEventListener('fullscreenchange', event => {
     if( document.fullscreenElement === videoContainer){
         fsBut.setAttribute("data-state","full");
+        botBar.classList.add("hideControls");
     } 
     else if( !document.fullscreenElement ){
         fsBut.setAttribute("data-state","nofull");
+        botBar.classList.remove("hideControls");
     }
 });
 function FullScrHandler(e){
@@ -299,3 +362,14 @@ function PipHandler(){
         document.exitPictureInPicture();
     }
 }
+// show - hide controls
+videoCont.addEventListener("mousemove",()=>{
+    if(delayCtrlTimeout !== undefined){
+        botBar.classList.remove("hideControls");
+        clearTimeout(delayCtrlTimeout);
+    }
+    delayCtrlTimeout = setTimeout(() => {
+        botBar.classList.add("hideControls");
+        delayCtrlTimeout = undefined;
+    }, 2000);  
+});
